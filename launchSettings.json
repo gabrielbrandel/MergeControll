@@ -1,0 +1,13 @@
+{
+    "profiles": {
+        "YourAppName": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true,
+            "applicationUrl": "http://192.168.3.149:5000;https://192.168.3.149:5001",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
