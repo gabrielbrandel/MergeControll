@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MergeControll")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c9596ca20a7878b679cb00749f32131c89ab9e52")]
 [assembly: System.Reflection.AssemblyProductAttribute("MergeControll")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MergeControll")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
