@@ -132,6 +132,7 @@ namespace Merge.Data
         public string? Commit { get; set; }
         public string? Status { get; set; }
         public double? CodigoStatus { get; set; }
+        public string? Requisito { get; set; }
     }
 
     public class TotalCount

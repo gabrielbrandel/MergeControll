@@ -232,7 +232,7 @@ public class QueryHelper
             whereQuery = " AND (" + whereQuery + ")";
 
             baseQuery += whereQuery;
-            Console.WriteLine($"Query detalhe: {baseQuery}");
+            // Console.WriteLine($"Query detalhe: {baseQuery}");
         }
 
             return (baseQuery, parameters);

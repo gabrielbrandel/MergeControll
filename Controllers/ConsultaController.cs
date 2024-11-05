@@ -5,6 +5,7 @@ using Merge.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MySqlConnector;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Merge.Controllers
 {
@@ -187,7 +188,8 @@ namespace Merge.Controllers
                                        ' ' as commit,
                                         s.codsitant as codigoStatus,
                                         (SELECT descricao from sitsup
-                                         where codsit = s.codsitant) as status
+                                         where codsit = s.codsitant) as status,
+                                         tm.value as requisito
                                    FROM
                                        suptec s
                                    INNER JOIN
@@ -203,7 +205,9 @@ namespace Merge.Controllers
                                    INNER JOIN
                                        webclienteservidor ws ON ws.fkIdCliente = c.codcli10
                                    LEFT JOIN
-                                       sgsistemas.ticket t ON t.id = s.codord";
+                                       sgsistemas.ticket t ON t.id = s.codord
+                                   LEFT JOIN
+                                       sgsistemas.ticket_custom tm ON tm.ticket = s.codord and name = 'requirements'";
 
                 var (sqlQuery, parameters) = QueryHelper.BuildQueryAndParameters(
                     baseQuery, start, end, empresa, codigoCliente, nomeEmpresa, cgc, ticket, contato,
