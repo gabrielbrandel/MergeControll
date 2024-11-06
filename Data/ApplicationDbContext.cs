@@ -142,7 +142,7 @@ namespace Merge.Data
 
     public class TicketResult
     {
-        public string Tickets { get; set; }
+        public string? Tickets { get; set; }
     }
 
 }

@@ -7,8 +7,7 @@ using MySqlConnector;
 
 public class QueryHelper
 {
-    public static (string query, List<MySqlParameter> parameters) BuildQueryAndParameters(
-        string baseQuery,
+    public static (string whereQuery, List<MySqlParameter> parameters) BuildQueryAndParameters(
         DateTime start, DateTime end,
         double? empresa, double? codigoCliente,
         string? nomeEmpresa, string? cgc,
@@ -20,11 +19,12 @@ public class QueryHelper
         string? version, string? milestone,
         string? descricaoEquipe, string? descricaoServicos,
         string? detalhesAtendimento, string? detalheCliente,
-        string? tecnico, string? commit, double? statusAberto, double? statusFechado, string? commitTickets)
+        string? tecnico, string? commit, double? statusAberto,
+        double? statusFechado, string? commitTickets, string? requisito)
     {
-        baseQuery += @" WHERE s.`data` >= @startDate AND s.`data` <= @endDate";
-        string? whereQuery = null;
+        string? whereQuery = "";
         string condicaoOu = " ";
+
         string formattedCommitTickets = commitTickets != null
             ? string.Join(", ", commitTickets)
             : string.Empty;
@@ -47,7 +47,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(nomeEmpresa))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" s2.nomeempr REGEXP CONCAT('(?i)', @nomeEmpresa)";
+            whereQuery += $" s2.nomeempr REGEXP CONCAT('(?i)', '{nomeEmpresa}')";
             parameters.Add(new MySqlParameter("@nomeEmpresa", nomeEmpresa));
             condicaoOu = " OR ";
         }
@@ -95,7 +95,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(descricaoModulo))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" m.descricao REGEXP CONCAT('(?i)', @descricaoModulo)";
+            whereQuery += $" m.descricao REGEXP CONCAT('(?i)', '{descricaoModulo}')";
             parameters.Add(new MySqlParameter("@descricaoModulo", descricaoModulo));
             condicaoOu = " OR ";
         }
@@ -127,7 +127,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(descricaoEquipe))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" LOWER(REGEXP_REPLACE(t.milestone, '(Projeto|-|[0-9])', '')) = LOWER(TRIM(@descricaoEquipe))";
+            whereQuery += $" t.milestone REGEXP CONCAT('(?i)','{descricaoEquipe}')";
             parameters.Add(new MySqlParameter("@descricaoEquipe", descricaoEquipe));
             condicaoOu = " OR ";
         }
@@ -135,7 +135,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(descricaoServicos))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" t.summary REGEXP CONCAT('(?i)',@descricaoServicos)";
+            whereQuery += $" t.summary REGEXP CONCAT('(?i)','{descricaoServicos}')";
             parameters.Add(new MySqlParameter("@descricaoServicos", descricaoServicos));
             condicaoOu = " OR ";
         }
@@ -151,7 +151,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(detalheCliente))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" ws.detalheCliente REGEXP CONCAT('(?i)',@detalheCliente)";
+            whereQuery += $" ws.detalheCliente REGEXP CONCAT('(?i)','{detalheCliente}')";
             parameters.Add(new MySqlParameter("@detalheCliente", detalheCliente));
             condicaoOu = " OR ";
         }
@@ -172,7 +172,6 @@ public class QueryHelper
             whereQuery += $" s.codord IN ({commitTickets})";
             parameters.Add(new MySqlParameter("@commit", commit));
             condicaoOu = " OR ";
-            // Console.WriteLine($"Query detalhe1: {whereQuery}");
         }
 
         if (!string.IsNullOrEmpty(solucao))
@@ -181,6 +180,15 @@ public class QueryHelper
             whereQuery += condicaoOu;
             whereQuery += $" concat(s.descricao4, ' ', s.descricao5) REGEXP CONCAT('(?i)', '{solucao}')";
             parameters.Add(new MySqlParameter("@solucao", solucao));
+            condicaoOu = " OR ";
+        }
+
+        if (!string.IsNullOrEmpty(requisito))
+        {
+
+            whereQuery += condicaoOu;
+            whereQuery += $" tm.value REGEXP CONCAT('(?i)', '{requisito}')";
+            parameters.Add(new MySqlParameter("@requisito", requisito));
             condicaoOu = " OR ";
         }
 
@@ -216,26 +224,14 @@ public class QueryHelper
             condicaoOu = " OR ";
         }
 
-        if (statusFechado.HasValue)
-        {
-            baseQuery += @" AND s.codsitant = @statusFechado";
-            parameters.Add(new MySqlParameter("@statusFechado", statusFechado));
-        }
 
-        if (statusAberto.HasValue)
-        {
-            baseQuery += @" AND s.codsitant <> @statusAberto";
-            parameters.Add(new MySqlParameter("@statusAberto", statusAberto));
-        }
 
         if (!string.IsNullOrEmpty(whereQuery)){
             whereQuery = " AND (" + whereQuery + ")";
-
-            baseQuery += whereQuery;
             // Console.WriteLine($"Query detalhe: {baseQuery}");
         }
 
-            return (baseQuery, parameters);
+            return (whereQuery, parameters);
     }
 }
 // w.detalhesAtendimento REGEXP CONCAT('(?i)', @detalhesAtendimento) OR  s.codord IN ({commitTickets})
