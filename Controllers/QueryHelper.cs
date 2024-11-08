@@ -159,9 +159,7 @@ public class QueryHelper
         if (!string.IsNullOrEmpty(tecnico))
         {
             whereQuery += condicaoOu;
-            whereQuery += @" (SELECT CONCAT(p.tecnico, ' - ', us.nome) FROM protec p
-                                INNER JOIN webusuario us ON us.fkIdVendedor = p.tecnico
-                                WHERE p.codord = s.codord ORDER BY data DESC LIMIT 1) REGEXP CONCAT('(?i)', @tecnico)";
+            whereQuery += $" (SELECT CONCAT(p.tecnico, ' - ', us.nome) FROM protec p INNER JOIN webusuario us ON us.fkIdVendedor = p.tecnico WHERE p.codord = s.codord ORDER BY data DESC LIMIT 1) REGEXP CONCAT('(?i)', '{tecnico}')";
             parameters.Add(new MySqlParameter("@tecnico", tecnico));
             condicaoOu = " OR ";
         }

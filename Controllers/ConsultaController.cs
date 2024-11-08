@@ -260,13 +260,13 @@ namespace Merge.Controllers
 
                 if (statusFechado.HasValue)
                 {
-                    baseQuery += @" AND s.codsitant = @statusFechado";
+                    baseQuery += $" AND s.codsitant = {statusFechado}";
                     parameters.Add(new MySqlParameter("@statusFechado", statusFechado));
                 }
 
                 if (statusAberto.HasValue)
                 {
-                    baseQuery += @" AND s.codsitant <> @statusAberto";
+                    baseQuery += $" AND s.codsitant <> {statusAberto} AND s.usufinal is null";
                     parameters.Add(new MySqlParameter("@statusAberto", statusAberto));
                 }
 
